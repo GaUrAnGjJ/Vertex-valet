@@ -3,7 +3,7 @@ import sqlite3
 
 app = FastAPI(title="Books API")
 
-DB_PATH = "../storage/library.db"
+DB_PATH = "storage/library.db"
 
 def get_db_connection():
     conn = sqlite3.connect(DB_PATH)
@@ -41,7 +41,7 @@ def search_books(q: str):
     cursor = conn.cursor()
 
     cursor.execute("""
-        SELECT isbn, title, author
+        SELECT *
         FROM books
         WHERE title LIKE ? OR author LIKE ?
         LIMIT 20

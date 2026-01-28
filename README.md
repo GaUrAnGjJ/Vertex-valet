@@ -9,26 +9,39 @@ A Big Data Engineering project for processing, storing, and serving book data. T
 - **Data Storage**: Store processed data in a SQLite database.
 - **API Service**: Provide RESTful endpoints to query book information by ISBN or search by title/author.
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 Vertex-valet/
-├── README.md                 # Project documentation
+├── pipeline.py              # Main pipeline orchestrator
+├── requirements.txt         # Python dependencies
+├── README.md               # This file
+│
 ├── API/
-│   ├── main.py               # FastAPI application for serving book data
-│   └── __pycache__           # Python cache files
-├── data/
-│   ├── processed/
-│   │   └── cleaned_RC_Book.csv  # Cleaned and processed book data
-│   └── raw/
-│       └── RC_books.csv         # Raw book data
+│   ├── __pycache__/
+│   └── main.py             # FastAPI application
+│
 ├── ingestion/
-│   └── ingestion.ipynb       # Jupyter notebook for data ingestion
+│   ├── __pycache__/
+│   └── ingestion.py        # Data ingestion module
+│
+├── transformation/
+│   ├── __pycache__/
+│   └── transformation.py   # Data transformation module
+│
 ├── storage/
-│   └── db.ipynb              # Jupyter notebook for database setup and storage
-└── transformation/
-│   └── transformation.ipynb  # Jupyter notebook for data transformation
-└── requirements.txt          # Required packages to run the files 
+│   ├── __pycache__/
+│   └── db.py               # Database operations module
+│
+├── data/
+│   ├── raw/
+│   │   └── RC_books.csv    # Raw input data
+│   └── processed/
+│       ├── cleaned_RC_Book.csv    # After ingestion
+│       └── cleaned_RC_Book1.csv   # After transformation
+│
+└── logs/
+    └── lllm.md             # Logging and documentation
 ```
 
 ## Installation
@@ -40,24 +53,10 @@ Vertex-valet/
 - SQLite (comes with Python)
 
 
-### Setup
-
-- Install the required Python package.
-- Create virutal Environment and download required packages :
-
-```bash
-1. 
-  python -m venv myvenv
-2.
-  .\myvenv\Scripts\activate
-3.
-  pip install -r requirements.txt
-```
-
 ### Database Setup
 
 1. Run the storage notebook to set up the database:
-   - Open `storage/db.ipynb` File.
+   - Open `storage/db.py` File.
    - Execute the all cells to create the SQLite database (`library.db`) and populate it with data.
 
 ## Workflow
@@ -65,7 +64,7 @@ Vertex-valet/
 The project follows a sequential data processing workflow:
 
 ### 1. Data Ingestion
-- **File**: `ingestion/ingestion.ipynb`
+- **File**: `ingestion/ingestion.py`
 - **Purpose**: Load raw book data from CSV files.
 - **Input**: `data/raw/RC_books.csv`
 - **Process**:
@@ -75,7 +74,7 @@ The project follows a sequential data processing workflow:
 - **Output**: Raw data loaded into memory for further processing.
 
 ### 2. Data Transformation
-- **File**: `transformation/transformation.ipynb`
+- **File**: `transformation/transformation.py`
 - **Purpose**: Clean, process, and enrich the ingested data.
 - **Input**: Processed data from ingestion or `data/processed/cleaned_RC_Book.csv`
 - **Process**:
@@ -86,7 +85,7 @@ The project follows a sequential data processing workflow:
 - **Output**: `data/processed/cleaned_RC_Book.csv` - the final processed dataset.
 
 ### 3. Data Storage
-- **File**: `storage/db.ipynb`
+- **File**: `storage/db.py`
 - **Purpose**: Store the processed data in a database for efficient querying.
 - **Input**: `data/processed/cleaned_RC_Book.csv`
 - **Process**:
@@ -118,13 +117,49 @@ The project follows a sequential data processing workflow:
   Pandas
   Jupyter Notebooks
 
-### Running the API
+### Setup
 
-Navigate to the `API` directory and start the FastAPI server:
+- Install the required Python package.
+- Create virutal Environment and download required packages:
 
 ```bash
-cd API
-uvicorn main:app --reload
+1. 
+  python -m venv myvenv
+2.
+  .\myvenv\Scripts\activate
+3.
+  pip install -r requirements.txt
+
+```
+
+
+## 💻 Usage
+
+### Run Complete Pipeline
+```bash
+python pipeline.py --all
+```
+
+### Run Specific Components
+
+**Only Ingestion:**
+```bash
+python pipeline.py --ingestion
+```
+
+**Only Transformation:**
+```bash
+python pipeline.py --transformation
+```
+
+**Only Database Operations:**
+```bash
+python pipeline.py --db
+```
+
+**Start API Server:**
+```bash
+python pipeline.py --api
 ```
 
 The API will be available at `http://127.0.0.1:8000`.
@@ -147,6 +182,17 @@ The API will be available at `http://127.0.0.1:8000`.
 - Health check: `curl http://127.0.0.1:8000/`
 - Get book by ISBN: `curl http://127.0.0.1:8000/docs#/default/get_book_by_isbn_books__isbn__get`
 - Search books: `curl http://127.0.0.1:8000/docs#/default/search_books_search_get`
+
+## Data Source
+- Open Library: `curl https://openlibrary.org/`
+- Google Books: `curl https://books.google.co.in/`
+
+
+## Data Statistics
+- Raw Data : 36358
+- After Removing Duplicate Data : 32012
+- Description Found : 26542
+
 
 ## Contributing
 
