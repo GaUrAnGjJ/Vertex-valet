@@ -18,19 +18,15 @@ Vertex-valet/
 ├── README.md               # This file
 │
 ├── API/
-│   ├── __pycache__/
 │   └── main.py             # FastAPI application
 │
 ├── ingestion/
-│   ├── __pycache__/
 │   └── ingestion.py        # Data ingestion module
 │
 ├── transformation/
-│   ├── __pycache__/
 │   └── transformation.py   # Data transformation module
 │
 ├── storage/
-│   ├── __pycache__/
 │   └── db.py               # Database operations module
 │
 ├── data/
