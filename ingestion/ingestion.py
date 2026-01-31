@@ -17,12 +17,25 @@ SAVE_EVERY = 200
 ## Load CSV Data
 
 def load_data(path):
+    """Load raw CSV data into a pandas DataFrame.
+    Args:
+        path (str): Path to the raw CSV file.
+    Returns:
+        pandas.DataFrame: Loaded raw data.
+    """
     print(f"Loading data from {path}")
     return pd.read_csv(path, encoding="latin-1", low_memory=False)
 
 ## Fetch description from Google Books
 
 def fetch_google_books(isbn):
+    """Fetch a book description from the Google Books API by ISBN.
+    Performs a few retry attempts with a small delay on failure.
+    Args:
+        isbn (str): The ISBN to query.
+    Returns:
+        str|None: Description text if found, otherwise None.
+    """
     if pd.isna(isbn):
         return None
 
@@ -46,6 +59,12 @@ def fetch_google_books(isbn):
 ## Fetch description from Open Library
 
 def fetch_openlibrary(isbn):
+    """Fetch a fallback description from Open Library by ISBN.
+    Args:
+        isbn (str): The ISBN to query.
+    Returns:
+        str|None: Notes or subtitle from Open Library if available.
+    """
     if pd.isna(isbn):
         return None
 
@@ -64,6 +83,10 @@ def fetch_openlibrary(isbn):
     return None
 
 def google_books_step(df, output_csv):
+    """Primary pass to fetch descriptions from Google Books and save progress.
+    This step populates a `book_description` column in `df` and periodically
+    writes progress to `output_csv`.
+    """
     print("Starting Google Books fetch (step 1)...")
 
     if "book_description" not in df.columns:
@@ -85,6 +108,10 @@ def google_books_step(df, output_csv):
 
 
 def openlibrary_step(input_csv, output_csv):
+    """Fallback pass that fills missing descriptions using Open Library.
+    Reads the intermediate CSV, fills missing `book_description` values and
+    periodically writes progress to `output_csv`.
+    """
     print("Starting Open Library fallback...")
 
     df = pd.read_csv(input_csv, encoding="latin-1", low_memory=False)
@@ -105,6 +132,10 @@ def openlibrary_step(input_csv, output_csv):
 
 
 def google_books_final_step(input_csv, output_csv):
+    """Final pass to give Google Books one more chance to fill missing data.
+    Attempts to fill any remaining missing `book_description` entries and
+    tags the source where applicable.
+    """
     print("Starting Google Books final pass...")
 
     df = pd.read_csv(input_csv, encoding="latin-1", low_memory=False)
@@ -131,6 +162,11 @@ def google_books_final_step(input_csv, output_csv):
 ## Main Pipeline
 
 def ingestion():
+    """Run the ingestion pipeline to enrich book metadata.
+    The pipeline runs three steps: initial Google Books fetch, Open Library
+    fallback for missing descriptions, and a final Google Books pass. The
+    result is written to `FINAL_OUTPUT`.
+    """
     start_time = time.time()
 
     df = load_data(RAW_INPUT_CSV)

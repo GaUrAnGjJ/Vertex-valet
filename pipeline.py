@@ -10,12 +10,15 @@ import uvicorn
 def api():
     uvicorn.run(
         "API.main:app",
-        # host="127.0.0.1",
-        # port=8000,
         reload=True
     )
 
 def main():
+    """CLI(Command-line Interface) entry point for the data pipeline.
+    Supports flags to run the individual pipeline stages or the entire
+    pipeline in sequence. Use `--all` to run ingestion, transformation,
+    database loading and start the API server.
+    """
     parser = argparse.ArgumentParser(description="BDE Data Pipeline")
 
     parser.add_argument("--ingestion", action="store_true")

@@ -18,12 +18,26 @@ drop_col = [
 ## Load Data 
 
 def load_data(INPUT_CSV):
+    """Load the input CSV into a pandas DataFrame.
+    Args:
+        INPUT_CSV (str): Path to the CSV file to read.
+    Returns:
+        pandas.DataFrame: The loaded data frame.
+    """
     print(f"Loading data from {INPUT_CSV}")
     return pd.read_csv(INPUT_CSV, encoding="latin-1", low_memory=False)
 
 ## Drop Columns
 
 def drop_columns(df , columns):
+    """Drop the specified columns from the DataFrame.
+    Missing columns are ignored.
+    Args:
+        df (pandas.DataFrame): Input DataFrame.
+        columns (list): List of column names to drop.
+    Returns:
+        pandas.DataFrame: DataFrame with columns removed.
+    """
     df = df.drop(columns = columns , errors = "ignore")
     return df
 
@@ -31,6 +45,14 @@ def drop_columns(df , columns):
 ## Clean Description Part(Remove HTML tags , HTML entities)
 
 def clean_description(text):
+    """Clean HTML and entities from a description string.
+    Converts HTML entities to text, strips tags and normalizes whitespace.
+    Returns None for missing values.
+    Args:
+        text (str|None): Raw description text.
+    Returns:
+        str|None: Cleaned description or None.
+    """
     if not text or pd.isna(text):
         return None
 
@@ -48,6 +70,14 @@ def clean_description(text):
 ## Clean Author Name(Normalize the Name {Remove ,.!})
 
 def clean_author(author):
+    """Normalize author names to lowercase and remove noise.
+    This strips punctuation, bracketed content, digits and leaves only
+    lowercase letters and spaces.
+    Args:
+        author (str|None): Raw author string.
+    Returns:
+        str|None: Normalized author or None for missing values.
+    """
     if not author or pd.isna(author):
         return None
 
@@ -68,6 +98,12 @@ def clean_author(author):
 ## Formatting the column Names
 
 def Format_col(df):
+    """Standardize column names to the project's schema.
+    Args:
+        df (pandas.DataFrame): Input DataFrame.
+    Returns:
+        pandas.DataFrame: DataFrame with renamed columns.
+    """
     df = df.rename(columns={
     'Author/Editor' : "Author",
     'Class No./Book No.' : "Class_no",
@@ -81,6 +117,11 @@ def Format_col(df):
     
 
 def transformation():
+    """Run the transformation steps and write the output CSV.
+    This function loads the processed CSV, cleans descriptions and author
+    names, drops unwanted columns, standardizes column names, and writes
+    the transformed data to `OUTPUT_CSV`.
+    """
     df = load_data(INPUT_CSV)
     df['book_description'] = df['book_description'].apply(clean_description)
     df["Author"] = df["Author"].apply(clean_author)
