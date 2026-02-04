@@ -1,6 +1,6 @@
 import argparse
 from urllib import parse
-from ingestion.ingestion import ingestion
+from ingestion.ingestion import run_pipeline
 from transformation.transformation import transformation
 from storage.db import main_db
 from API.main import app
@@ -27,7 +27,7 @@ def main():
     args = parser.parse_args()
 
     if args.all:
-        ingestion()
+        run_pipeline()
         transformation()
         main_db()
         app()
@@ -35,7 +35,7 @@ def main():
         return
 
     if args.ingestion:
-        ingestion()
+        run_pipeline()
 
     if args.transformation:
         transformation()
