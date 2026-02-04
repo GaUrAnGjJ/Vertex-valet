@@ -48,6 +48,28 @@ Vertex-valet/
 - Jupyter Notebook (for running the notebooks)
 - SQLite (comes with Python)
 
+## 🔬 Data Resources & Sources
+
+-Description enrichment sources (used by ingestion stage):
+  - OpenLibrary
+  - Google Books
+  - Bookswagon
+
+These sources are used in a prioritized, multi-stage fetch strategy with retries and polite delays to reduce rate-limit issues.
+
+---
+
+## 📊 Data statistics (current workspace snapshot)
+
+- Raw Data: ~36,361 (Without description)
+- Cleaned Data: 28,503(With Description)
+- Final dataset columns: `Acc_Date`, `Acc_No`, `Title`, `ISBN`, `Author_Editor`, `Edition_Volume`, `Place_Publisher`, `Year`, `Pages`, `Class_No`, `description`
+
+Notes:
+- The pipeline removes rows where a usable description is not available and rows with invalid or missing ISBNs as part of the `transformation` stage; this explains the reduction in row count.
+
+---
+
 
 ### Database Setup
 
@@ -72,18 +94,18 @@ The project follows a sequential data processing workflow:
 ### 2. Data Transformation
 - **File**: `transformation/transformation.py`
 - **Purpose**: Clean, process, and enrich the ingested data.
-- **Input**: Processed data from ingestion or `data/processed/cleaned_RC_Book.csv`
+- **Input**: Processed data from ingestion or `data/processed/clean_description.csv`
 - **Process**:
   - Load the cleaned data.
   - Perform data transformations (e.g., adding descriptions, normalizing fields).
   - Handle missing values, duplicates, and data quality issues.
   - Apply business logic for data enrichment.
-- **Output**: `data/processed/cleaned_RC_Book.csv` - the final processed dataset.
+- **Output**: `data/processed/clean_description.csv` - the final processed dataset.
 
 ### 3. Data Storage
 - **File**: `storage/db.py`
 - **Purpose**: Store the processed data in a database for efficient querying.
-- **Input**: `data/processed/cleaned_RC_Book.csv`
+- **Input**: `data/processed/clean_description.csv`
 - **Process**:
   - Create a SQLite database schema.
   - Load the processed CSV data into the database.
@@ -179,16 +201,18 @@ The API will be available at `http://127.0.0.1:8000`.
 - Get book by ISBN: `curl http://127.0.0.1:8000/docs#/default/get_book_by_isbn_books__isbn__get`
 - Search books: `curl http://127.0.0.1:8000/docs#/default/search_books_search_get`
 
-## Data Source
-- Open Library: `curl https://openlibrary.org/`
-- Google Books: `curl https://books.google.co.in/`
 
+## 🔍 Troubleshooting & Tips
 
-## Data Statistics
-- Raw Data : 36358
-- After Removing Duplicate Data : 32012
-- Description Found : 26542
+- Ingestion failures: network timeouts and rate-limits are common. The ingestion code uses retries and delays; if results are sparse, try reducing `max_workers` or increasing `delay` in `ingestion/ingestion.py`.
 
+- Encoding issues: raw CSVs use `latin1` in ingestion and `latin-1`/`utf-8` elsewhere. If you see encoding errors, try opening with the `encoding` parameter (the pipeline already uses `latin1` for raw load).
+
+- Rebuild DB: delete `storage/library.db` and run `python pipeline.py --db`.
+
+- If API returns 404 for ISBN that should exist, verify `storage/library.db` contains the row (run `storage/db.py:verify_data` or open with sqlite browser).
+
+---
 
 ## Contributing
 
