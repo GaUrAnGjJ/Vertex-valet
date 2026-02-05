@@ -1,160 +1,136 @@
-# Vertex-Valet 
+# Vertex-Valet 📚
 
-A Big Data Engineering project for processing, storing, and serving book data. This project demonstrates an end-to-end ETL (Extract, Transform, Load) pipeline for book recommendations or catalog management, culminating in a REST API and a Semantic Search Engine.
+Vertex Valet is an intelligent book recommendation and search system designed to help users discover books using natural language. Unlike traditional search engines that rely on keyword matching, Vertex Valet utilizes semantic search to understand the *meaning* and *context* of your query.
 
-## Features
+Whether you're looking for a "sad story about a robot" or "a history of space exploration," Vertex Valet finds the most relevant books from a curated dataset of over 28,000 titles.
 
-- **Data Ingestion**: Multi-source ingestion pipeline to load raw book data.
-- **Data Transformation**: Clean and process data, handle missing strings, and normalize formats.
-- **Data Storage**: Efficient storage using SQLite with optimized schema.
-- **API Service**: Fast, asynchronous REST API built with **FastAPI**.
-- **Recommender System**: Semantic search capabilities using **Sentence Transformers** (`all-MiniLM-L6-v2`) to find books based on natural language descriptions (e.g., "sad story about a robot").
-- **Hybrid Search**: "Smart Search" that combines keyword matching (for Authors) with semantic similarity.
-- **Frontend**: A modern, responsive web interface for users to explore books.
+![Vertex Valet Interface](https://via.placeholder.com/800x400?text=Vertex+Valet+Application+Screenshot)
+*(Screenshot of the application interface)*
 
-## 📁 Project Structure
+---
 
-```
-Vertex-valet/
-├── pipeline.py              # Main pipeline orchestrator
-├── requirements.txt         # Python dependencies
-├── README.md                # This file
-│
-├── frontend/                # Web Interface
-│   ├── index.html           # Main UI
-│   ├── app.js               # Frontend Logic
-│   └── styles.css           # Styling
-│
-├── recommender/             # Recommendation Engine
-│   ├── build_embeddings.py  # Script to generate embeddings
-│   ├── recommender.py       # Inference engine
-│   ├── patch_metadata.py    # Utility to update metadata
-│   ├── embeddings.pkl       # Vector artifacts (generated)
-│   └── README.md            # Specific documentation
-│
-├── API/
-│   └── main.py              # FastAPI application
-│
-├── ingestion/
-│   └── ingestion.py         # Data ingestion module
-│
-├── transformation/
-│   └── transformation.py    # Data transformation module
-│
-├── storage/
-│   └── db.py                # Database operations module
-│
-├── data/
-│   ├── raw/                 # Raw input (RC_books.csv)
-│   └── processed/           # Cleaned CSVs
-│           └──clean_description.csv
-│
-└── logs/                    # System logs
+## 🚀 Key Features
+
+*   **🔍 Semantic Search**: Powered by **Sentence Transformers** (`all-MiniLM-L6-v2`), enabling users to find books by describing plots, themes, or feelings.
+*   **🧠 Hybrid Search Engine**: A smart combination of vector-based semantic search and traditional keyword matching (e.g., for specific authors), providing the best of both worlds.
+*   **⚡ High-Performance API**: Built with **FastAPI** for asynchronous, low-latency responses.
+*   **🎨 Modern Frontend**: A clean, responsive web interface featuring dynamic book cards, cover images, and interactive descriptions.
+*   **🛠️ End-to-End ETL Pipeline**: A complete data engineering workflow including ingestion, cleaning, transformation, and storage.
+*   **🐳 Dockerized Deployment**: Fully containerized for easy deployment on platforms like Railway or Render.
+
+---
+
+## 🏗️ Architecture
+
+The project follows a modular microservices-like architecture:
+
+```mermaid
+graph LR
+    A[Raw Data Sources] --> B(Ingestion Pipeline)
+    B --> C(Transformation & Cleaning)
+    C --> D[(SQLite Database)]
+    C --> E[Vector Embeddings Generator]
+    E --> F[(Embeddings Store)]
+    D --> G[FastAPI Backend]
+    F --> G
+    G --> H[Frontend UI]
 ```
 
-## Installation
+### Tech Stack
+
+-   **Language**: Python 3.11
+-   **Backend Framework**: FastAPI
+-   **Database**: SQLite
+-   **ML Model**: `distilbert-base-nli-stsb-mean-tokens` / `all-MiniLM-L6-v2`
+-   **Vector Search**: Scikit-Learn (Cosine Similarity)
+-   **Frontend**: Vanilla HTML5, CSS3, JavaScript
+-   **Containerization**: Docker
+
+---
+
+## 🛠️ Installation & Local Setup
 
 ### Prerequisites
+- Python 3.8+
+- Docker (Optional, for containerized run)
 
-- Python 3.8 or higher
-
-### Setup
-
-1. **Create Virtual Environment**:
-   ```bash
-   python -m venv myvenv
-   .\myvenv\Scripts\activate  # Windows
-   # source myvenv/bin/activate  # Linux/Mac
-   ```
-
-2. **Install Dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. **Initialize Database** (First time only):
-   ```bash
-   python pipeline.py --db
-   ```
-
-4. **Generate Embeddings** (Required for Recommender):
-   ```bash
-   python recommender/build_embeddings.py
-   ```
-   *Note: This downloads the 90MB model and may take a few minutes to process ~28k books.*
-
----
-
-## 🧠 Recommender System
-
-This module provides the intelligence behind the "Recommend" feature.
-
-- **Model**: Uses `all-MiniLM-L6-v2` (a lightweight, high-performance transformer).
-- **Process**: 
-  1. Concatenates Book Title + Description.
-  2. Generates dense vector embeddings.
-  3. Calculates Cosine Similarity between user query and book vectors.
-- **Hybrid Logic**: The engine prioritizes **Exact Author Matches** (boosting their score) while mixing in semantic results, allowing users to search by both "Vibe" and "Author Name" in a single bar.
-
-You can test the recommender standalone:
+### 1. Clone the Repository
 ```bash
-python recommender/recommender.py
+git clone https://github.com/hetsoni1313/Vertex-valet.git
+cd Vertex-valet
 ```
 
----
+### 2. Set Up Virtual Environment
+```bash
+python -m venv venv
+# Windows
+.\venv\Scripts\activate
+# Mac/Linux
+source venv/bin/activate
+```
 
-## 💻 Usage
+### 3. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
 
-### 1. Run the Full Backend Pipeline
-To run the API (which automatically loads the recommender):
+### 4. Initialize Data & Model
+Run the pipeline to build the database and generate embeddings (this processes ~28k books):
+```bash
+# Initialize Database
+python pipeline.py --db
+
+# Generate Semantic Embeddings (Downloads ML model)
+python recommender/build_embeddings.py
+```
+
+### 5. Run the Application
+Start the backend server (which also serves the frontend):
 ```bash
 python pipeline.py --api
 ```
-The API listens at `http://127.0.0.1:8000`.
+Access the application at: **[http://localhost:8000](http://localhost:8000)**
 
-### 2. Run the Frontend
-In a separate terminal:
+---
+
+## 🐳 Running with Docker
+
+Vertex Valet is one-click deployable.
+
 ```bash
-cd frontend
-python -m http.server 3000
+# Build the image
+docker build -t vertex-valet .
+
+# Run the container
+docker run -p 8000:8000 vertex-valet
 ```
-Open **[http://localhost:3000](http://localhost:3000)** in your browser.
 
-### 3. Pipeline Commands
-The `pipeline.py` script helps manage the ETL process:
-
-- **Run Ingestion**: `python pipeline.py --ingestion`
-- **Run Transformation**: `python pipeline.py --transformation`
-- **Reset Database**: `python pipeline.py --db`
-- **Run Everything**: `python pipeline.py --all`
+The Docker image automatically handles database initialization and model downloading during the build process to ensure fast startup times.
 
 ---
 
-## 📊 Data Snapshot
+## 📊 Dataset Overview
 
-- **Raw Data**: ~36,361 records
-- **Cleaned & Indexed**: ~28,503 records (Filtered for valid ISBNs and Descriptions)
-- **Sources**: OpenLibrary, Google Books, Bookswagon (Data resources).
-
----
-
-## 🔍 API Endpoints
-
-- **GET /api/health**: Health check (`{"status": "API is running"}`)
-- **GET /recommend?query=...**: Semantic/Hybrid search.
-- **GET /books/{isbn}**: Get details by ISBN.
-- **GET /search?q=...**: Legacy keyword search (Title/Author).
+*   **Total Records**: ~28,503 Cleaned Book Records
+*   **Attributes**: Title, Author, Year, Description, ISBN, Poster URL, and more.
+*   **Sources**: Aggregated from OpenLibrary, Google Books, and Bookswagon.
+*   **Data Quality**: Filtered for valid ISBNs and non-empty descriptions to ensure high-quality recommendations.
 
 ---
 
-## Contributing
+## 👥 Contributors
 
-Contributions are welcome! Please fork the repository and submit a pull request with your changes.
+<div align="center">
 
-<div align="right">
-
-**Vertex-Valet Team**
-**Het Katrodiya**
-**Gaurang Jadav**
+| Name | Role | GitHub |
+| :--- | :--- | :--- |
+| **Het Katrodiya** | Big Data Engineer | [@hetsoni1313](https://github.com/hetsoni1313) |
+| **Gaurang Jadav** | AI/ML Engineer | [@gaurangjadav](https://github.com/) |
 
 </div>
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
