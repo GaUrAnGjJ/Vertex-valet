@@ -4,8 +4,6 @@ Vertex Valet is an intelligent book recommendation and search system designed to
 
 Whether you're looking for a "sad story about a robot" or "a history of space exploration," Vertex Valet finds the most relevant books from a curated dataset of over 28,000 titles.
 
-![Vertex Valet Interface](https://via.placeholder.com/800x400?text=Vertex+Valet+Application+Screenshot)
-*(Screenshot of the application interface)*
 
 ---
 
