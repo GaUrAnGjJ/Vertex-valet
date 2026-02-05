@@ -23,6 +23,10 @@ RUN pip install --no-cache-dir torch torchvision torchaudio --index-url https://
 # Install remaining dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Pre-download the transformer model to the image cache to ensure fast startup
+# This prevents downloading it at runtime which causes timeouts
+RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('all-MiniLM-L6-v2')"
+
 # Copy the rest of the application code
 COPY . .
 
