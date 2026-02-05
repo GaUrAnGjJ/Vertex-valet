@@ -9,7 +9,7 @@ A Big Data Engineering project for processing, storing, and serving book data. T
 - **Data Storage**: Efficient storage using SQLite with optimized schema.
 - **API Service**: Fast, asynchronous REST API built with **FastAPI**.
 - **Recommender System**: Semantic search capabilities using **Sentence Transformers** (`all-MiniLM-L6-v2`) to find books based on natural language descriptions (e.g., "sad story about a robot").
-- **Hybrid Search**: "Smart Search" that combines keyword matching with semantic similarity.
+- **Hybrid Search**: "Smart Search" that combines keyword matching (for Authors) with semantic similarity.
 - **Frontend**: A modern, responsive web interface for users to explore books.
 
 ## 📁 Project Structure
@@ -45,25 +45,18 @@ Vertex-valet/
 │   └── db.py                # Database operations module
 │
 ├── data/
-│   ├── raw/                 # Raw input
-│   │   └── RC_books.csv
+│   ├── raw/                 # Raw input (RC_books.csv)
 │   └── processed/           # Cleaned CSVs
 │           └──clean_description.csv
 │
-└── logs/
-    └── lllm.md             # Logging and documentation
+└── logs/                    # System logs
 ```
 
 ## Installation
 
 ### Prerequisites
 
-## Technologies Used
-  Python 3.8+
-  FastAPI
-  SQLite
-  Pandas
-  Jupyter Notebooks
+- Python 3.8 or higher
 
 ### Setup
 
@@ -140,16 +133,14 @@ The `pipeline.py` script helps manage the ETL process:
 ## 📊 Data Snapshot
 
 - **Raw Data**: ~36,361 records
-- **Cleaned & Indexed**: ~28,481 records (Filtered for valid ISBNs and Descriptions)
+- **Cleaned & Indexed**: ~28,503 records (Filtered for valid ISBNs and Descriptions)
 - **Sources**: OpenLibrary, Google Books, Bookswagon (Data resources).
-- **Final dataset columns**: `Acc_Date`, `Acc_No`, `Title`, `ISBN`, `Author_Editor`, `Edition_Volume`, `Place_Publisher`, `Year`, `Pages`, `Class_No`, `description`
-
 
 ---
 
 ## 🔍 API Endpoints
 
-- **GET /**: Health check (`{"status": "API is running"}`)
+- **GET /api/health**: Health check (`{"status": "API is running"}`)
 - **GET /recommend?query=...**: Semantic/Hybrid search.
 - **GET /books/{isbn}**: Get details by ISBN.
 - **GET /search?q=...**: Legacy keyword search (Title/Author).

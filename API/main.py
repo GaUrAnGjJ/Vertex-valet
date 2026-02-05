@@ -89,11 +89,9 @@ def recommend_books(query: str):
     try:
         results = recommender_engine.recommend(query)
         return results
-
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Recommendation failed: {str(e)}")
 
 # Serve static files from the frontend directory
 # This must be the last route to allow other API routes to take precedence
 app.mount("/", StaticFiles(directory="frontend", html=True), name="static")
-

@@ -103,9 +103,9 @@ function renderResults(books) {
                 <div class="book-description">
                     ${(() => {
                 const desc = book.description || 'No description available.';
-                if (desc.length > 200) {
+                if (desc.length > 400) {
                     return `
-                                <span class="desc-short">${desc.substring(0, 200)}...</span>
+                                <span class="desc-short">${desc.substring(0, 400)}...</span>
                                 <span class="desc-full hidden">${desc}</span>
                                 <button class="show-more-btn" onclick="toggleDescription(event, this)">Show More</button>
                             `;
