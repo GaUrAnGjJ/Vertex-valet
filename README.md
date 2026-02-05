@@ -109,12 +109,19 @@ The Docker image automatically handles database initialization and model downloa
 
 ---
 
-## Dataset Overview
+## Dataset Statistics
 
-*   **Total Records**: ~28,503 Cleaned Book Records
-*   **Attributes**: Title, Author, Year, Description, ISBN, Poster URL, and more.
-*   **Sources**: Aggregated from OpenLibrary, Google Books, and Bookswagon.
-*   **Data Quality**: Filtered for valid ISBNs and non-empty descriptions to ensure high-quality recommendations.
+### Content Metrics
+- **Raw Data Volume**: ~36,361 records
+- **Processed Catalog**: ~28,503 unique books
+- **Data Reduction**: ~21% filtered out (missing ISBNs or descriptions) to ensure quality.
+- **Sources**: OpenLibrary, Google Books, Bookswagon.
+
+### Technical Metrics
+- **Vector Dimensions**: 384 (all-MiniLM-L6-v2 model)
+- **Database Size**: ~45 MB (SQLite)
+- **Embeddings Artifact**: ~80 MB (Optimized Pickle format)
+- **Search Latency**: <100ms (Approximate on standard CPU)
 
 ---
 
@@ -122,15 +129,13 @@ The Docker image automatically handles database initialization and model downloa
 
 <div align="center">
 
-| Name | Role | GitHub |
-| :--- | :--- | :--- |
-| **Het Katrodiya** | Big Data Engineer | [@hetsoni1313](https://github.com/hetsoni1313) |
-| **Gaurang Jadav** | AI/ML Engineer | [@gaurangjadav](https://github.com/) |
+| Name | GitHub |
+| :--- | :--- |
+| **Het Katrodiya** | [@hetsoni1313](https://github.com/hetsoni1313) |
+| **Gaurang Jadav** | [@gaurangjadav](https://github.com/) |
 
 </div>
 
 ---
 
-## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
