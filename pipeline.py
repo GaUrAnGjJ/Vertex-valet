@@ -1,6 +1,6 @@
 import argparse
 from urllib import parse
-from ingestion.ingestion import ingestion
+from ingestion.ingestion import run_pipeline
 from transformation.transformation import transformation
 from storage.db import main_db
 from API.main import app
@@ -10,15 +10,12 @@ import uvicorn
 def api():
     uvicorn.run(
         "API.main:app",
+        # host="127.0.0.1",
+        # port=8000,
         reload=True
     )
 
 def main():
-    """CLI(Command-line Interface) entry point for the data pipeline.
-    Supports flags to run the individual pipeline stages or the entire
-    pipeline in sequence. Use `--all` to run ingestion, transformation,
-    database loading and start the API server.
-    """
     parser = argparse.ArgumentParser(description="BDE Data Pipeline")
 
     parser.add_argument("--ingestion", action="store_true")
@@ -30,7 +27,7 @@ def main():
     args = parser.parse_args()
 
     if args.all:
-        ingestion()
+        run_pipeline()
         transformation()
         main_db()
         app()
@@ -38,7 +35,7 @@ def main():
         return
 
     if args.ingestion:
-        ingestion()
+        run_pipeline()
 
     if args.transformation:
         transformation()

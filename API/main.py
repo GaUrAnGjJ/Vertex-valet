@@ -1,45 +1,34 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.staticfiles import StaticFiles
 import sqlite3
 
 app = FastAPI(title="Books API")
 
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+)
+
 DB_PATH = "storage/library.db"
 
 def get_db_connection():
-    """Create and return a SQLite database connection.
-
-    The returned connection uses `sqlite3.Row` as the row factory so rows
-    can be accessed like dictionaries. The function reads the database
-    path from the module-level `DB_PATH` constant.
-
-    Returns:
-        sqlite3.Connection: A connection object to the library database.
-    """
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row 
     return conn
 
-@app.get("/")
+@app.get("/api/health")
 def health_check():
-    """Health-check endpoint.
-
-    Returns a small JSON payload indicating the API is up. Used for
-    readiness/liveness checks during development and deployment.
-    """
     return {"status": "API is running"}
 
 ## Find Book By ISBN
 
 @app.get("/books/{isbn}")
 def get_book_by_isbn(isbn: str):
-    """Retrieve a book record by its ISBN.
-    Args:
-        isbn (str): The ISBN of the book to look up.
-    Raises:
-        HTTPException: 404 if the book is not found.
-    Returns:
-        dict: The book record as a dictionary.
-    """
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -59,15 +48,6 @@ def get_book_by_isbn(isbn: str):
 
 @app.get("/search")
 def search_books(q: str):
-    """Search books by title or author.
-
-    The query parameter `q` is matched against the `title` and `author`
-    columns using a LIKE query. Returns up to 20 matches.
-    Args:
-        q (str): Search query string.
-    Returns:
-        List[dict]: A list of matching book records.
-    """
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -82,3 +62,38 @@ def search_books(q: str):
     conn.close()
 
     return [dict(r) for r in results]
+
+## Recommendation System
+
+import sys
+from pathlib import Path
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.append(str(ROOT))
+from recommender.recommender import BookRecommender
+
+recommender_engine = BookRecommender()
+
+@app.on_event("startup")
+def load_recommender():
+    """Load recommender model on startup to reduce latency for first request."""
+    # We wrap in try-except in case embeddings aren't built yet
+    try:
+        recommender_engine.load()
+        print("Recommender model loaded successfully.")
+    except Exception as e:
+        print(f"Warning: Could not load recommender model: {e}")
+
+@app.get("/recommend")
+def recommend_books(query: str):
+    """Get book recommendations based on semantic search."""
+    try:
+        results = recommender_engine.recommend(query)
+        return results
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Recommendation failed: {str(e)}")
+
+# Serve static files from the frontend directory
+# This must be the last route to allow other API routes to take precedence
+app.mount("/", StaticFiles(directory="frontend", html=True), name="static")
+
