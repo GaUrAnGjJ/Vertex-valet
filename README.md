@@ -1,4 +1,4 @@
-# Vertex-Valet 📚
+# Vertex-Valet
 
 Vertex Valet is an intelligent book recommendation and search system designed to help users discover books using natural language. Unlike traditional search engines that rely on keyword matching, Vertex Valet utilizes semantic search to understand the *meaning* and *context* of your query.
 
@@ -9,18 +9,18 @@ Whether you're looking for a "sad story about a robot" or "a history of space ex
 
 ---
 
-## 🚀 Key Features
+## Key Features
 
-*   **🔍 Semantic Search**: Powered by **Sentence Transformers** (`all-MiniLM-L6-v2`), enabling users to find books by describing plots, themes, or feelings.
-*   **🧠 Hybrid Search Engine**: A smart combination of vector-based semantic search and traditional keyword matching (e.g., for specific authors), providing the best of both worlds.
-*   **⚡ High-Performance API**: Built with **FastAPI** for asynchronous, low-latency responses.
-*   **🎨 Modern Frontend**: A clean, responsive web interface featuring dynamic book cards, cover images, and interactive descriptions.
-*   **🛠️ End-to-End ETL Pipeline**: A complete data engineering workflow including ingestion, cleaning, transformation, and storage.
-*   **🐳 Dockerized Deployment**: Fully containerized for easy deployment on platforms like Railway or Render.
+*   **Semantic Search**: Powered by **Sentence Transformers** (`all-MiniLM-L6-v2`), enabling users to find books by describing plots, themes, or feelings.
+*   **Hybrid Search Engine**: A smart combination of vector-based semantic search and traditional keyword matching (e.g., for specific authors), providing the best of both worlds.
+*   **High-Performance API**: Built with **FastAPI** for asynchronous, low-latency responses.
+*   **Modern Frontend**: A clean, responsive web interface featuring dynamic book cards, cover images, and interactive descriptions.
+*   **End-to-End ETL Pipeline**: A complete data engineering workflow including ingestion, cleaning, transformation, and storage.
+*   **Dockerized Deployment**: Fully containerized for easy deployment on platforms like Railway or Render.
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 The project follows a modular microservices-like architecture:
 
@@ -48,7 +48,7 @@ graph LR
 
 ---
 
-## 🛠️ Installation & Local Setup
+## Installation & Local Setup
 
 ### Prerequisites
 - Python 3.8+
@@ -93,7 +93,7 @@ Access the application at: **[http://localhost:8000](http://localhost:8000)**
 
 ---
 
-## 🐳 Running with Docker
+## Running with Docker
 
 Vertex Valet is one-click deployable.
 
@@ -109,7 +109,7 @@ The Docker image automatically handles database initialization and model downloa
 
 ---
 
-## 📊 Dataset Overview
+## Dataset Overview
 
 *   **Total Records**: ~28,503 Cleaned Book Records
 *   **Attributes**: Title, Author, Year, Description, ISBN, Poster URL, and more.
@@ -118,7 +118,7 @@ The Docker image automatically handles database initialization and model downloa
 
 ---
 
-## 👥 Contributors
+## Contributors
 
 <div align="center">
 
@@ -131,6 +131,6 @@ The Docker image automatically handles database initialization and model downloa
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
