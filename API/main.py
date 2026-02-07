@@ -63,6 +63,20 @@ def search_books(q: str):
 
     return [dict(r) for r in results]
 
+@app.get("/random-books")
+def get_random_books():
+    """Fetch 10 random books from the database."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("SELECT * FROM books ORDER BY RANDOM() LIMIT 10")
+        results = cursor.fetchall()
+        return [dict(r) for r in results]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        conn.close()
+
 ## Recommendation System
 
 import sys

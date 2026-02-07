@@ -38,7 +38,7 @@ class BookRecommender:
         self.loaded = True
         logging.info("Recommender ready.")
 
-    def recommend(self, query: str, top_k: int = 5):
+    def recommend(self, query: str, top_k: int = 6):
         """Recommend books based on query string."""
         if not self.loaded:
             self.load()

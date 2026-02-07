@@ -145,6 +145,78 @@ document.getElementById('search-input').addEventListener('keypress', function (e
     }
 });
 
+// Load random books on startup
+window.addEventListener('DOMContentLoaded', fetchRandomBooks);
+async function fetchRandomBooks() {
+    const list = document.getElementById('random-books-list');
+    const section = document.getElementById('random-books-section');
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/random-books`);
+        if (!response.ok) throw new Error('Failed to fetch random books');
+
+        const books = await response.json();
+        if (books && books.length > 0) {
+            section.classList.remove('hidden');
+            renderBookList(books, list);
+        }
+    } catch (e) {
+        console.error("Could not load random books:", e);
+    }
+}
+
+function renderBookList(books, container) {
+    container.innerHTML = '';
+    books.forEach((book, index) => {
+        const card = document.createElement('div');
+        card.className = 'book-card';
+        card.style.animationDelay = `${index * 0.1}s`;
+
+        const scoreHtml = book.score
+            ? `<div class="book-score">Match: ${(book.score * 100).toFixed(0)}%</div>`
+            : '';
+
+        // Safely handle missing year/isbn
+        const year = book.year || 'Unknown Year';
+
+        const posterHtml = book.poster_url
+            ? `<div class="book-poster-container"><img src="${book.poster_url}" alt="Cover" class="book-poster" onerror="this.src='https://via.placeholder.com/150x220?text=No+Cover'"></div>`
+            : '<div class="book-poster-placeholder">No Cover</div>';
+
+        const moreDetailsHtml = book.book_url
+            ? `<a href="${book.book_url}" target="_blank" class="more-details-btn">Details</a>`
+            : '';
+
+        // Simplified description for cards
+        const desc = book.description || 'No description available.';
+        const shortDesc = desc.length > 100 ? desc.substring(0, 100) + '...' : desc;
+
+        card.innerHTML = `
+            ${posterHtml}
+            <div class="book-info">
+                <div class="book-title">${book.title}</div>
+                <div class="book-author">by ${book.author}</div>
+                <div class="book-meta">${year}</div>
+                
+                <div class="book-description">
+                     ${shortDesc}
+                </div>
+
+                <div class="card-footer">
+                    ${scoreHtml}
+                    ${moreDetailsHtml}
+                </div>
+            </div>
+        `;
+
+        card.onclick = (e) => {
+            if (e.target.closest('.more-details-btn')) return;
+            // Optional: show details
+        };
+        container.appendChild(card);
+    });
+}
+
 function toggleDescription(event, btn) {
     event.stopPropagation();
     const container = btn.closest('.book-description');

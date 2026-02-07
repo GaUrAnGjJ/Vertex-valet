@@ -123,6 +123,20 @@ The Docker image automatically handles database initialization and model downloa
 
 ---
 
+
+## Application Screenshots
+
+![Search Query](screenshots/UI.png)
+
+
+![Search Results](screenshots/search.png)
+
+
+![Random books](screenshots/shelves.png)
+
+
+---
+
 ## Contributors
 
 <div align="center">
@@ -136,19 +150,5 @@ The Docker image automatically handles database initialization and model downloa
 </div>
 
 ---
-
-## Application Screenshots
-
-![Search Query](screenshots/search_query.png)
-*(Semantic search for "data scrapping")*
-
-![Search Results](screenshots/search_results.png)
-*(Rich results with book covers and descriptions)*
-
----
-
-## License
-
-This project is licensed under the MIT License.
 
 
